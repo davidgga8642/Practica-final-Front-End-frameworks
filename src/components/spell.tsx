@@ -2,6 +2,8 @@ import c from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import upcastIcon from "src/assets/icons/other/upcast.png";
 
+import { TooltipSpell } from "./TooltipSpell";  
+
 import type { Spell } from "src/models/spell";
 
 import styles from "./spell.module.css";
@@ -55,7 +57,9 @@ export function Spell({
   };
 
   return (
+  <TooltipSpell spell={spell}>
     <article
+      tabIndex={0}
       className={c(
         styles.spell,
         highlighted && !detailed && styles.highlighted,
@@ -77,5 +81,6 @@ export function Spell({
         </div>
       )}
     </article>
-  );
+  </TooltipSpell>
+);
 }

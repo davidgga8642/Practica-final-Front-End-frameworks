@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { ClassGrid } from "src/components/class-grid";
 import { SpellDiagram } from "src/components/spell-diagram";
 
@@ -7,26 +7,23 @@ import type { ClassId } from "src/models/character-class";
 import styles from "./app.module.css";
 
 export function App() {
-  const [selectedClass, setSelectedClass] = useState<ClassId>();
-  const [highlightedClass, setHighlightedClass] = useState<ClassId>();
+  const { className } = useParams(); // <- viene de la ruta dinámica
+  const navigate = useNavigate();
+
+  const selectedClass = className as ClassId | undefined;
   const background = selectedClass ? "classGrid" : "spellDiagram";
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if (
-      (event.key === "Escape" || event.key === "Backspace") &&
-      selectedClass
-    ) {
+    if ((event.key === "Escape" || event.key === "Backspace") && selectedClass) {
       event.preventDefault();
-      setSelectedClass(undefined);
-      setHighlightedClass(undefined);
-      return;
+      navigate("/"); // ← volver a la pantalla principal
     }
   };
 
   return (
     <main className={styles.main} onKeyDown={onKeyDown}>
       <SpellDiagram
-        highlightedClass={highlightedClass}
+        highlightedClass={undefined} // puedes adaptar si decides usar highlight
         selectedClass={selectedClass}
         background={background === "spellDiagram"}
       />
@@ -34,8 +31,8 @@ export function App() {
       <ClassGrid
         selectedClass={selectedClass}
         background={background === "classGrid"}
-        highlight={setHighlightedClass}
-        onClick={setSelectedClass}
+        highlight={() => {}} // opcionalmente puedes omitir o adaptar
+        onClick={(cls) => navigate(`/${cls}`)} // ← navegación dinámica
       />
     </main>
   );

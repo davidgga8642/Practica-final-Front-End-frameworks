@@ -1,0 +1,25 @@
+.tooltip {
+  background-color: #1c1c1e;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+  max-width: 250px;
+  z-index: 1000;
+}
+
+.tooltip img {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.tooltip div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}

@@ -1,4 +1,6 @@
 import c from "classnames";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import spellsByClass from "src/data/spells-by-class.json";
 import spells from "src/data/spells.json";
 import { Spell } from "./spell";
@@ -19,6 +21,8 @@ export function SpellDiagram({
   selectedClass,
   background,
 }: Props) {
+  const navigate = useNavigate();
+
   const spellsByLevel = groupSpellsByLevel(spells as SpellType[]);
   const status = selectedClass
     ? "selected"
@@ -37,6 +41,35 @@ export function SpellDiagram({
   const isSpellDetailed = (spell: SpellType) =>
     selectedClass && highlightedSpells.has(spell.id);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedClass) return;
+
+      const focusables = Array.from(
+        document.querySelectorAll<HTMLElement>('[tabindex="0"]')
+      );
+
+      const current = document.activeElement;
+      const index = focusables.indexOf(current as HTMLElement);
+
+      if (["ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
+        e.preventDefault();
+        const nextIndex =
+          e.key === "ArrowLeft"
+            ? (index - 1 + focusables.length) % focusables.length
+            : (index + 1) % focusables.length;
+        focusables[nextIndex]?.focus();
+      }
+
+      if (e.key === "Escape") {
+        navigate("/");
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectedClass, navigate]);
+
   return (
     <div
       className={c(
@@ -54,7 +87,7 @@ export function SpellDiagram({
             <div className={styles.row}>
               {firstHalf.map((spell, idx) => (
                 <Spell
-                  key={`${level}-1-${idx}`}
+                  key={'${level}-1-${idx}'}
                   spell={spell}
                   highlighted={isSpellHighlighted(spell)}
                   detailed={isSpellDetailed(spell)}
